@@ -12,7 +12,7 @@ cabeçalho do seu programa:
 #include <PNL_min.hpp>
 ```
 
-Para compilar, utilize a tag `-pnl` e o `pkg-config` com os parametros do GSL.
+Para compilar, utilize a tag `-lpnl` e o `pkg-config` com os parametros do GSL.
 Ex.:
 ```
 g++ main.cpp -o saida.o -I. -L. -lpnl `pkg-config --libs gsl`
