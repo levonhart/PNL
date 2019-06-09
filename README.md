@@ -6,14 +6,20 @@ minimizador multidimensional
   - pkg-config (opcional)
 
 # Instruções de uso
+Essa biblioteca consiste em dois arquivos, `PNL_min.hpp` e `libpnl.a`. Para utilizar, adicione o seguinte código no 
+cabeçalho do seu programa:
+```
+#include <PNL_min.hpp>
+```
+
 Para compilar, utilize a tag `-pnl` e o `pkg-config` com os parametros do GSL.
 Ex.:
 ```
-g++ main.cpp -o saida.o -L. -lpnl `pkg-config --libs gsl`
+g++ main.cpp -o saida.o -I. -L. -lpnl `pkg-config --libs gsl`
 ```
 Se não possuir a ferramenta `pkg-config`:
 ```
-g++ main.cpp -o saida.o -L. -lpnl -lgsl -lgslcblas -lm
+g++ main.cpp -o saida.o -I. -L. -lpnl -lgsl -lgslcblas -lm
 ```
 
 Os métodos são realizados no ambiente de minimização `PNL_min_anbiente` sobre a classe `PNL_funcao`.
