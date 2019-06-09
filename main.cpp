@@ -1,4 +1,4 @@
-#include "PNL_min.hpp"
+#include <PNL_min.hpp>
 #include <iostream>
 
 double f_quad (const gsl_vector *x, double * param){
@@ -29,20 +29,18 @@ int main(int argc, char *argv[])
 	gsl_vector_set_all(x,1);
 
 	// PNL_min_ambiente * wp = new PNL_min_ambiente(PNL_GRAD,PNL_UD_SEC_AUREA,func,x,0.01);
-	PNL_min_ambiente * wp = new PNL_min_ambiente(PNL_QNEWTON_BFGS,PNL_UD_SEC_AUREA,func,x,0.01);
+	PNL_min_ambiente * wp = new PNL_min_ambiente(PNL_QNEWTON_BFGS,PNL_BL_SEC_AUREA,func,x,0.01);
 	// PNL_min_ambiente * wp = new PNL_min_ambiente(PNL_GRAD,PNL_UD_SEC_AUREA,2);
-	printf("x0 = [ %lf\t%lf ]\nx1 = [ %lf\t%lf ]\nf(x0) = %lf \t f(x1) = %lf\n",\
-			gsl_vector_get(wp->x_ant,0), gsl_vector_get(wp->x_ant,1),\
-			gsl_vector_get(wp->x_atual,0),gsl_vector_get(wp->x_atual,1),\
-			 wp->imag_ant,wp->imag_atual);
 	while (wp->teste_gradiente()) {
-	wp->passo();
-	printf("x0 = [ %lf\t%lf ]\nx1 = [ %lf\t%lf ]\nf(x0) = %lf \t f(x1) = %lf\n",\
-			gsl_vector_get(wp->x_ant,0), gsl_vector_get(wp->x_ant,1),\
-			gsl_vector_get(wp->x_atual,0),gsl_vector_get(wp->x_atual,1),\
-			 wp->imag_ant,wp->imag_atual);
+		printf("x_atual = [ %lf\t%lf ]\tf(x) = %5.10lf\n\n",\
+				gsl_vector_get(wp->x_atual,0),gsl_vector_get(wp->x_atual,1),\
+				 wp->imag_atual);
+		wp->passo();
 		
 	}
+	printf("x_min  = [ %lf\t%lf ]\tf(x) = %5.10lf\n\n",\
+			gsl_vector_get(wp->x_atual,0),gsl_vector_get(wp->x_atual,1),\
+			 wp->imag_atual);
 
 
 	return 0;

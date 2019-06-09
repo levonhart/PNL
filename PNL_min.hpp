@@ -10,8 +10,8 @@
 #define PNL_QNEWTON_RK1 0x52
 #define PNL_QNEWTON_DFP 0x44
 #define PNL_QNEWTON_BFGS 0x42
-#define PNL_UD_ARMIJO 0x41
-#define PNL_UD_SEC_AUREA 0x61
+#define PNL_BL_ARMIJO 0x41
+#define PNL_BL_SEC_AUREA 0x61
 
 #define PHI 0.618033988749894848204586834365638117720309179805762862135448622
 #define PNL_SEC_AUREA_RO 1.0
@@ -64,9 +64,9 @@ struct PNL_min_ambiente {
 	PNL_funcao funcao;
 	PNL_metodo_desc * metodo;
 
-	PNL_min_ambiente(char tipo, char t_busca_unidim, int dim);
+	PNL_min_ambiente(char tipo, char t_busca_linear, int dim);
 	PNL_min_ambiente(char tipo,
-					char t_busca_unidim,
+					char t_busca_linear,
 					PNL_funcao f,
 					gsl_vector *x_inicial,
 					double erro);

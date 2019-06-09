@@ -148,7 +148,6 @@ void PNL_metodo_desc::iterar(gsl_vector *x_atual, PNL_funcao f, gsl_vector *x_pr
 	gsl_vector * y = gsl_vector_alloc(f.dim);
 	gsl_blas_dsymv(CblasUpper,-1.0,this->H,f.Df(x_atual),0.0,this->d); // d <- -( H * Df )
 	this->passo = this->t_passo(x_atual,d,f,erro,this->param);
-	cout<<this->passo<<endl;
 
 	gsl_blas_dcopy(x_atual,y);
 	gsl_blas_daxpy(this->passo,this->d,y);
@@ -188,9 +187,9 @@ PNL_metodo_desc::PNL_metodo_desc(char tipo, char tbusca, double *param, int dim)
 		this->atualizar_H = PNL_qnewton_bfgs;
 	} else this->atualizar_H = NULL;
 
-	if (tbusca == PNL_UD_SEC_AUREA) {
+	if (tbusca == PNL_BL_SEC_AUREA) {
 		this->t_passo = PNL_busca_unidim_secao_aurea;
-	} else if (tbusca == PNL_UD_ARMIJO) {
+	} else if (tbusca == PNL_BL_ARMIJO) {
 		this->t_passo = PNL_busca_unidim_armijo;
 	}
 }
@@ -199,52 +198,52 @@ void PNL_metodo_desc::def_param(double * param){
 }
 
 
-PNL_min_ambiente::PNL_min_ambiente(char tipo, char t_busca_unidim, int dim){
+PNL_min_ambiente::PNL_min_ambiente(char tipo, char t_busca_linear, int dim){
 	double * param;
 	this->tipo = tipo;
-	this->tbusca = t_busca_unidim;
+	this->tbusca = t_busca_linear;
 	gsl_vector *x_ini = gsl_vector_alloc(dim);
 	gsl_vector *x_atual = gsl_vector_alloc(dim);
 	gsl_vector *x_ant = gsl_vector_alloc(dim);
 	gsl_vector *grad = gsl_vector_alloc(dim);
 
-	if (t_busca_unidim == PNL_UD_SEC_AUREA) {
+	if (t_busca_linear == PNL_BL_SEC_AUREA) {
 		param = new double(1);
 		*param = PNL_SEC_AUREA_RO;
-	} else if (t_busca_unidim == PNL_UD_ARMIJO) {
+	} else if (t_busca_linear == PNL_BL_ARMIJO) {
 		param = new double(3);
 		param[0] = PNL_ARMIJO_TBAR;
 		param[1] = PNL_ARMIJO_ETA;
 		param[2] = PNL_ARMIJO_THETA;
 	}
 
-	this->metodo = new PNL_metodo_desc(tipo,t_busca_unidim, param, dim);
+	this->metodo = new PNL_metodo_desc(tipo,t_busca_linear, param, dim);
 }
 
 PNL_min_ambiente::PNL_min_ambiente(char tipo,
-								char t_busca_unidim,
+								char t_busca_linear,
 								PNL_funcao f,
 								gsl_vector *x_inicial,
 								double erro){
 	double * param;
 	this->tipo = tipo;
-	this->tbusca = t_busca_unidim;
+	this->tbusca = t_busca_linear;
 	gsl_vector *x_ini = gsl_vector_alloc(f.dim);
 	gsl_vector *x_atual = gsl_vector_alloc(f.dim);
 	gsl_vector *x_ant = gsl_vector_alloc(f.dim);
 	gsl_vector *grad = gsl_vector_alloc(f.dim);
 
-	if (t_busca_unidim == PNL_UD_SEC_AUREA) {
+	if (t_busca_linear == PNL_BL_SEC_AUREA) {
 		param = new double(1);
 		*param = PNL_SEC_AUREA_RO;
-	} else if (t_busca_unidim == PNL_UD_ARMIJO) {
+	} else if (t_busca_linear == PNL_BL_ARMIJO) {
 		param = new double(3);
 		param[0] = PNL_ARMIJO_TBAR;
 		param[1] = PNL_ARMIJO_ETA;
 		param[2] = PNL_ARMIJO_THETA;
 	}
 
-	this->metodo = new PNL_metodo_desc(tipo,t_busca_unidim, param, f.dim);
+	this->metodo = new PNL_metodo_desc(tipo,t_busca_linear, param, f.dim);
 	this->def(f,x_inicial,erro);
 }
 
@@ -259,7 +258,7 @@ void PNL_min_ambiente::def(PNL_funcao f, gsl_vector *x_inicial, double erro){
 	gsl_blas_dcopy(f.Df(x_inicial),grad);
 	this->imag_atual = f.f(x_inicial);
 	this->imag_ant = this->imag_atual;
-	this->erro = erro;
+	this->erro = fabs(erro);
 }
 
 void PNL_min_ambiente::passo(){
